@@ -1,0 +1,52 @@
+{% set name = "genogrove" %}
+{% set version = "0.3.0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/genogrove/genogrove/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 4f81c034ab7fe610a766ebcb7d9b05ff5a9f1b597ed9d84bec5a37ca6ebf8c31
+
+build:
+  number: 0
+  run_exports:
+    - {{ pin_subpackage(name, max_pin="x.x") }}
+
+test:
+  commands:
+    - test -f $PREFIX/lib/libgenogrove${SHLIB_EXT}  # [unix]
+    - test -f $PREFIX/include/genogrove/version.hpp  # [unix]
+    - if not exist %LIBRARY_LIB%\genogrove.lib exit 1  # [win]
+    - if not exist %LIBRARY_INC%\genogrove\version.hpp exit 1  # [win]
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+    - cmake >=3.14
+    - make  # [unix]
+    - ninja  # [win]
+
+  host:
+    - libcxx  # [osx]
+
+  run:
+    - libcxx  # [osx]
+
+about:
+  home: https://github.com/genogrove/genogrove
+  summary: "Modern C++ genome indexing library"
+  description: |
+    GenoGrove is a modern C++ library for genome indexing and genetic data
+    analysis. It provides high-performance data structures for genomic
+    interval queries and analysis tasks, requiring C++20.
+  license: GPL-3.0-or-later
+  license_file: LICENSE
+  doc_url: https://www.genogrove.com
+  dev_url: https://github.com/genogrove/genogrove
+
+extra:
+  recipe-maintainers:
+    - genogrove
+
